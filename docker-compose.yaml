@@ -1,0 +1,29 @@
+version: '3.8'
+networks:
+  nats:
+    name: nats
+    driver: bridge
+
+services:
+  psql:
+    image: postgres:latest
+    container_name: psql
+    volumes:
+      - psql:/var/lib/postgresql/data
+    build: ./psql/
+    user: root
+    env_file: my.env
+    ports:
+      - '5432:5432'
+    networks:
+      - nats
+    restart: unless-stopped
+
+volumes:
+  psql:
+    driver: local
+    name: db
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/kseed/docker/db
